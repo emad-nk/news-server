@@ -1,6 +1,5 @@
 package com.upday.domainobject
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
 import javax.persistence.*
@@ -17,27 +16,25 @@ data class ArticleDO(
 
     @NotNull
     @Size(max = 50)
-    @get:JsonProperty
-    var header: String = "",
+    var header: String,
 
     @NotNull
     @Size(max = 100)
-    @get:JsonProperty
-    var shortDescription: String = "",
+    var shortDescription: String,
 
     @NotNull
-    @get:JsonProperty
-    var text: String = "",
+    var text: String,
 
     @NotNull
-    @get:JsonProperty
-    var keywords: ArrayList<String>,
+    var keywords: ArrayList<String> = ArrayList(),
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @get:JsonProperty
-    var publishDate: LocalDate? = null,
+    var publishDate: LocalDate,
 
-    @ManyToMany(mappedBy = "articles")
-    var authors: List<AuthorDO> = mutableListOf()
+    @ManyToMany(cascade = [CascadeType.ALL])
+    @JoinTable(name = "author_article",
+        joinColumns = [JoinColumn(name = "author_id")],
+        inverseJoinColumns = [JoinColumn(name = "article_id")])
+    var authors: MutableList<AuthorDO> = ArrayList()
 )

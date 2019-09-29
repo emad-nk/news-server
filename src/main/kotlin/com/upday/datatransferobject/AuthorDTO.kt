@@ -1,28 +1,29 @@
 package com.upday.datatransferobject
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.ApiModelProperty
-import jdk.nashorn.internal.ir.annotations.Ignore
 import javax.validation.constraints.*
 
-class AuthorDTO {
+data class AuthorDTO(
 
-    @Ignore
+    @get:JsonProperty
     @ApiModelProperty(hidden = true)
-    var id: Long? = null
+    var id: Long? = null,
 
     @NotNull
     @NotEmpty
     @ApiModelProperty(example = "Smith", required = true)
     @Size(min = 2, max = 50)
-    var lastName: String = ""
+    var lastName: String? = null,
 
     @NotNull
     @NotEmpty
     @ApiModelProperty(example = "Oliver", required = true)
     @Size(min = 2, max = 50)
-    var firstName: String = ""
+    var firstName: String? = null,
 
-    @Ignore
     @ApiModelProperty(hidden = true)
-    var articles: List<ArticleDTO> = mutableListOf()
-}
+    @JsonIgnoreProperties("authors")
+    var articles: MutableList<ArticleDTO> = ArrayList()
+)

@@ -1,9 +1,14 @@
 package com.upday.controller
 
+import com.upday.datatransferobject.ArticleDTO
 import com.upday.service.article.ArticleService
+import com.upday.util.MapperUtil
+import io.swagger.annotations.ApiOperation
 import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
+
 /**
  * All operations with an article will be routed by this controller.
  */
@@ -12,6 +17,28 @@ import org.springframework.web.bind.annotation.RestController
 class ArticleController(private val articleService: ArticleService) {
 
     companion object {
-        private val log = LoggerFactory.getLogger(ArticleController::class.java)!!
+        private val LOGGER = LoggerFactory.getLogger(ArticleController::class.java)!!
+    }
+
+    @ApiOperation(value = "Add a new article")
+    @PostMapping(consumes = ["application/json"])
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createArticle(@RequestBody @Valid articleDTO: ArticleDTO): ArticleDTO {
+        val articleDO = MapperUtil.makeArticleDO(articleDTO)
+        return MapperUtil.makeArticleDTO(articleService.create(articleDO, articleDTO.authorIds!!))
+    }
+
+    @ApiOperation(value = "Get article with id")
+    @GetMapping("/id/{articleId}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getArticle(@PathVariable articleId: Long): ArticleDTO {
+        return MapperUtil.makeArticleDTO(articleService.getArticleById(articleId))
+    }
+
+    @ApiOperation(value = "Delete article with id")
+    @DeleteMapping("/id/{articleId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteArticle(@PathVariable articleId: Long) {
+        articleService.deleteArticle(articleId)
     }
 }
