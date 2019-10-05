@@ -26,8 +26,12 @@ class MapperUtil {
             return mapper.map(dataObject, ArticleDTO::class.java)
         }
 
-        fun makeAuthorDTOList(authors :List<AuthorDO>): List<AuthorDTO> {
-            return authors.map { authorDO -> makeAuthorDTO(authorDO)  }.toList()
+        fun makeAuthorDTOList(authors: List<AuthorDO>): List<AuthorDTO> {
+            return authors.map { authorDO -> makeAuthorDTO(authorDO) }.toList()
+        }
+
+        fun makeArticleDTOList(articles: List<ArticleDO>): List<ArticleDTO> {
+            return articles.map { article -> makeArticleDTO(article) }.toList()
         }
     }
 }

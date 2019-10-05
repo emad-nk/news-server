@@ -8,11 +8,10 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.*
 import org.springframework.test.context.junit4.SpringRunner
+import java.time.LocalDate
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -61,5 +60,59 @@ class ArticleControllerTest : TestBase() {
         // Find Again
         val findAgainResponse = restTemplate.getForEntity("$baseUri/id/$articleID", String::class.java)
         Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+    }
+
+    @Test
+    fun `find article by author name`() {
+        val response = restTemplate.exchange("$baseUri/authors?firstName=James&lastName=Henry",
+            HttpMethod.GET, null, object : ParameterizedTypeReference<List<ArticleDTO>>() {})
+
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+
+        val articles = response.body!!
+        Assertions.assertThat(articles.size).isEqualTo(2)
+        Assertions.assertThat(articles[0].header).isEqualTo("some header")
+        Assertions.assertThat(articles[1].header).isEqualTo("some header2")
+    }
+
+    @Test
+    fun `find article by author name should not find non-existing author`() {
+        val response = restTemplate.exchange("$baseUri/authors?firstName=James&lastName=NoMore",
+            HttpMethod.GET, null, object : ParameterizedTypeReference<List<ArticleDTO>>() {})
+
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat(response.body!!.size).isEqualTo(0)
+    }
+
+    @Test
+    fun `find article within specified dates`() {
+        val uriWithDates = "$baseUri/dates?from=${LocalDate.now().minusDays(1)}&to=${LocalDate.now()}"
+
+        val response = restTemplate
+            .exchange(uriWithDates,
+                HttpMethod.GET,
+                null,
+                object : ParameterizedTypeReference<List<ArticleDTO>>() {})
+
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+
+        val articles = response.body!!
+        Assertions.assertThat(articles.size).isEqualTo(2)
+        Assertions.assertThat(articles[0].header).isEqualTo("some header")
+        Assertions.assertThat(articles[1].header).isEqualTo("some header2")
+    }
+
+    @Test
+    fun `find article within specified dates should not find non-existing`() {
+        val uriWithDates = "$baseUri/dates?from=${LocalDate.now().minusDays(10)}&to=${LocalDate.now().minusDays(5)}"
+
+        val response = restTemplate
+            .exchange(uriWithDates,
+                HttpMethod.GET,
+                null,
+                object : ParameterizedTypeReference<List<ArticleDTO>>() {})
+
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        Assertions.assertThat(response.body!!.size).isEqualTo(0)
     }
 }

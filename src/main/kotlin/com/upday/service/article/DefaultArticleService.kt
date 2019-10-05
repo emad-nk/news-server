@@ -6,9 +6,11 @@ import com.upday.domainobject.ArticleDO
 import com.upday.domainobject.AuthorDO
 import com.upday.exception.ConstraintsViolationException
 import com.upday.exception.EntityNotFoundException
+import com.upday.service.search.Search
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 import javax.transaction.Transactional
 
 @Service
@@ -47,6 +49,28 @@ class DefaultArticleService(private val articleRepository: ArticleRepository,
      */
     override fun getArticleById(articleId: Long): ArticleDO {
         return findArticleChecked(articleId)
+    }
+
+    /**
+     * Gets list of articles for a specific author
+     *
+     * @param firstName first name of the author
+     * @param lastName last name of the author
+     * @return list of articleDO which is found
+     */
+    override fun getArticlesFromAuthor(firstName: String, lastName: String): List<ArticleDO> {
+        return articleRepository.findAll(Search.getArticlesByAuthorFirstNameLastName(firstName, lastName))
+    }
+
+    /**
+     * Gets list of articles within specified dates
+     *
+     * @param from from date
+     * @param to to date
+     * @return list of articleDO which is found
+     */
+    override fun getArticlesWithinPeriod(from: LocalDate, to: LocalDate): List<ArticleDO> {
+        return articleRepository.findAll(Search.getArticlesByPeriod(from, to))
     }
 
     /**
