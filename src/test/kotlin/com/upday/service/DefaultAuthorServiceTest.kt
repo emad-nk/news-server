@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
-class DefaultAuthorServiceTest: TestBase() {
+class DefaultAuthorServiceTest : TestBase() {
 
     @Mock
     private lateinit var authorRepository: AuthorRepository
@@ -24,9 +24,10 @@ class DefaultAuthorServiceTest: TestBase() {
     @InjectMocks
     private lateinit var service: DefaultAuthorService
 
-    companion object{
+    companion object {
         @BeforeClass
-        @JvmStatic fun setup() {
+        @JvmStatic
+        fun setup() {
             MockitoAnnotations.initMocks(DefaultAuthorService::class.java)
         }
     }
@@ -54,21 +55,21 @@ class DefaultAuthorServiceTest: TestBase() {
     }
 
     @Test
-    fun `verify findById is called for find`(){
+    fun `verify findById is called for find`() {
         `when`(authorRepository.findById(1)).thenReturn(Optional.of(getAuthorMocked()))
         service.getAuthorById(1)
         verify(authorRepository, times(1)).findById(1)
     }
 
     @Test
-    fun `verify findById is called for delete`(){
+    fun `verify findById is called for delete`() {
         `when`(authorRepository.findById(1)).thenReturn(Optional.of(getAuthorMocked()))
         service.deleteAuthor(1)
         verify(authorRepository, times(1)).findById(1)
     }
 
     @Test
-    fun `verify save is called for creating new author`(){
+    fun `verify save is called for creating new author`() {
         val authorDO = getAuthorMocked()
         `when`(authorRepository.save(authorDO)).thenReturn(authorDO)
         service.create(authorDO)

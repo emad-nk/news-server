@@ -1,20 +1,18 @@
 package com.upday.repository
 
-import com.upday.NewsApplication
 import com.upday.dataaccessobject.AuthorRepository
-import com.upday.domainobject.AuthorDO
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import org.springframework.test.context.junit4.SpringRunner
 
 /**
  * This test class is based on the data inserted in the DB by SampleData class under util package
  */
-@RunWith(SpringJUnit4ClassRunner::class)
-@SpringBootTest(classes = [NewsApplication::class])
+@RunWith(SpringRunner::class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AuthorRepositoryTest {
 
     @Autowired

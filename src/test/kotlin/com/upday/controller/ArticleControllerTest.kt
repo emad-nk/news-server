@@ -2,6 +2,7 @@ package com.upday.controller
 
 import com.upday.TestBase
 import com.upday.datatransferobject.ArticleDTO
+import com.upday.datatransferobject.AuthorDTO
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,35 +13,43 @@ import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.*
 import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDate
+import java.util.HashMap
+import org.springframework.http.HttpEntity
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ArticleControllerTest : TestBase() {
 
+
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
-    private val baseUri = "/v1/articles"
-    private val headers = HttpHeaders()
+
+    companion object {
+        private const val BASE_URI = "/v1/articles"
+        private val headers = HttpHeaders()
+    }
 
     @Test
     fun `create an article then find it and delete it`() {
-        headers.contentType = MediaType.APPLICATION_JSON_UTF8
+        headers.contentType = MediaType.APPLICATION_JSON
         val article = getArticleDTO()
         val entity = HttpEntity(article, headers)
 
+
         // Post
-        val response = restTemplate.postForEntity(baseUri, entity, ArticleDTO::class.java)
+        val response = restTemplate.postForEntity(BASE_URI, entity, ArticleDTO::class.java)
         Assertions.assertThat(response).isNotNull
         Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
 
         val articleResponseDTO = response.body!!
+
         val articleID = articleResponseDTO.id
 
         Assertions.assertThat(articleID).isNotNull()
         Assertions.assertThat(articleResponseDTO.header).isEqualTo("some header for test")
 
         // Find
-        val findResponse = restTemplate.getForEntity("$baseUri/id/$articleID", ArticleDTO::class.java)
+        val findResponse = restTemplate.getForEntity("$BASE_URI/id/$articleID", ArticleDTO::class.java)
 
         Assertions.assertThat(findResponse).isNotNull
         Assertions.assertThat(findResponse.statusCode).isEqualTo(HttpStatus.OK)
@@ -55,16 +64,81 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(foundArticleDTO.authors[1].lastName).isEqualTo("Writer")
 
         // Delete
-        restTemplate.delete("$baseUri/id/$articleID")
+        restTemplate.delete("$BASE_URI/id/$articleID")
 
         // Find Again
-        val findAgainResponse = restTemplate.getForEntity("$baseUri/id/$articleID", String::class.java)
+        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/id/$articleID", String::class.java)
+        Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+    }
+
+    @Test
+    fun `create an article, edit it and delete it`() {
+        headers.contentType = MediaType.APPLICATION_JSON
+        val article = getArticleDTO()
+        val entity = HttpEntity(article, headers)
+
+        // Post
+        val response = restTemplate.postForEntity(BASE_URI, entity, ArticleDTO::class.java)
+        Assertions.assertThat(response).isNotNull
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
+
+        val articleResponseDTO = response.body!!
+        val articleID = articleResponseDTO.id
+
+        Assertions.assertThat(articleID).isNotNull()
+        Assertions.assertThat(articleResponseDTO.header).isEqualTo("some header for test")
+        Assertions.assertThat(articleResponseDTO.shortDescription).isEqualTo("some short description for test")
+        Assertions.assertThat(articleResponseDTO.text).isEqualTo("some text for test")
+        Assertions.assertThat(articleResponseDTO.publishDate).isEqualTo(LocalDate.now())
+        Assertions.assertThat(articleResponseDTO.keywords).hasSize(2)
+        Assertions.assertThat(articleResponseDTO.keywords[0]).isEqualTo("keyword1Test")
+        Assertions.assertThat(articleResponseDTO.keywords[1]).isEqualTo("keyword2Test")
+        Assertions.assertThat(articleResponseDTO.authors).hasSize(2)
+        Assertions.assertThat(articleResponseDTO.authors[0].firstName).isEqualTo("James")
+        Assertions.assertThat(articleResponseDTO.authors[1].firstName).isEqualTo("Mary")
+
+        // Update/edit
+        val params = HashMap<String, String>()
+        params["articleId"] = articleID.toString()
+
+        val updatedArticle = articleResponseDTO.copy()
+        updatedArticle.header = "Updated header"
+        updatedArticle.authorIds = listOf(1)
+
+        val requestEntity = HttpEntity(updatedArticle, headers)
+        val updateResponse = restTemplate.exchange("$BASE_URI/update/id/{articleId}",
+            HttpMethod.PUT,
+            requestEntity,
+            ArticleDTO::class.java,
+            params)
+
+        Assertions.assertThat(updateResponse).isNotNull
+        Assertions.assertThat(updateResponse.statusCode).isEqualTo(HttpStatus.OK)
+
+//        val updatedResponseDTO = mapper.readValue(updateResponse.body!!, ArticleDTO::class.java)
+        val updatedResponseDTO = updateResponse.body!!
+        Assertions.assertThat(updatedResponseDTO.id).isEqualTo(articleID)
+        Assertions.assertThat(updatedResponseDTO.authors).hasSize(1)
+        Assertions.assertThat(updatedResponseDTO.authors[0].firstName).isEqualTo("James")
+        Assertions.assertThat(updatedResponseDTO.header).isEqualTo("Updated header")
+        Assertions.assertThat(articleResponseDTO.shortDescription).isEqualTo("some short description for test")
+        Assertions.assertThat(articleResponseDTO.text).isEqualTo("some text for test")
+        Assertions.assertThat(articleResponseDTO.publishDate).isEqualTo(LocalDate.now())
+        Assertions.assertThat(articleResponseDTO.keywords).hasSize(2)
+        Assertions.assertThat(articleResponseDTO.keywords[0]).isEqualTo("keyword1Test")
+        Assertions.assertThat(articleResponseDTO.keywords[1]).isEqualTo("keyword2Test")
+
+        // Delete
+        restTemplate.delete("$BASE_URI/id/$articleID")
+
+        // Find Again
+        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/id/$articleID", String::class.java)
         Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
     @Test
     fun `find article by author name`() {
-        val response = restTemplate.exchange("$baseUri/authors?firstName=James&lastName=Henry",
+        val response = restTemplate.exchange("$BASE_URI/authors?firstName=James&lastName=Henry",
             HttpMethod.GET, null, object : ParameterizedTypeReference<List<ArticleDTO>>() {})
 
         Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
@@ -77,7 +151,7 @@ class ArticleControllerTest : TestBase() {
 
     @Test
     fun `find article by author name should not find non-existing author`() {
-        val response = restTemplate.exchange("$baseUri/authors?firstName=James&lastName=NoMore",
+        val response = restTemplate.exchange("$BASE_URI/authors?firstName=James&lastName=NoMore",
             HttpMethod.GET, null, object : ParameterizedTypeReference<List<ArticleDTO>>() {})
 
         Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
@@ -86,7 +160,7 @@ class ArticleControllerTest : TestBase() {
 
     @Test
     fun `find article within specified dates`() {
-        val uriWithDates = "$baseUri/dates?from=${LocalDate.now().minusDays(1)}&to=${LocalDate.now()}"
+        val uriWithDates = "$BASE_URI/dates?from=${LocalDate.now().minusDays(1)}&to=${LocalDate.now()}"
 
         val response = restTemplate
             .exchange(uriWithDates,
@@ -104,7 +178,7 @@ class ArticleControllerTest : TestBase() {
 
     @Test
     fun `find article within specified dates should not find non-existing`() {
-        val uriWithDates = "$baseUri/dates?from=${LocalDate.now().minusDays(10)}&to=${LocalDate.now().minusDays(5)}"
+        val uriWithDates = "$BASE_URI/dates?from=${LocalDate.now().minusDays(10)}&to=${LocalDate.now().minusDays(5)}"
 
         val response = restTemplate
             .exchange(uriWithDates,
@@ -115,4 +189,5 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         Assertions.assertThat(response.body!!.size).isEqualTo(0)
     }
+
 }

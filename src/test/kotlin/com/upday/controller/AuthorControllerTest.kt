@@ -1,6 +1,5 @@
 package com.upday.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.upday.TestBase
 import com.upday.datatransferobject.AuthorDTO
 import org.assertj.core.api.Assertions
@@ -11,15 +10,19 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.*
 import org.springframework.test.context.junit4.SpringRunner
+import java.util.*
 
 @RunWith(SpringRunner::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuthorControllerTest : TestBase() {
 
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
-    private val baseUri = "/v1/authors"
-    private val headers = HttpHeaders()
+
+    companion object {
+        private const val BASE_URI = "/v1/authors"
+        private val headers = HttpHeaders()
+    }
 
     @Test
     fun `create an author then find it and delete it`() {
@@ -28,7 +31,7 @@ class AuthorControllerTest : TestBase() {
         val entity = HttpEntity(author, headers)
 
         // Post
-        val response = restTemplate.postForEntity(baseUri, entity, AuthorDTO::class.java)
+        val response = restTemplate.postForEntity(BASE_URI, entity, AuthorDTO::class.java)
         Assertions.assertThat(response).isNotNull
         Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
 
@@ -39,7 +42,7 @@ class AuthorControllerTest : TestBase() {
         Assertions.assertThat(responseAuthorDTO.firstName).isEqualTo("Juan")
 
         // Find
-        val findResponse = restTemplate.getForEntity("$baseUri/id/$authorID", AuthorDTO::class.java)
+        val findResponse = restTemplate.getForEntity("$BASE_URI/id/$authorID", AuthorDTO::class.java)
 
         Assertions.assertThat(findResponse).isNotNull
         Assertions.assertThat(findResponse.statusCode).isEqualTo(HttpStatus.OK)
@@ -49,12 +52,61 @@ class AuthorControllerTest : TestBase() {
         Assertions.assertThat(foundAuthorDTO.lastName).isEqualTo("Jamon")
 
         // Delete
-        restTemplate.delete("$baseUri/id/$authorID")
+        restTemplate.delete("$BASE_URI/id/$authorID")
 
         // Find Again
-        val findAgainResponse = restTemplate.getForEntity("$baseUri/id/$authorID", String::class.java)
+        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/id/$authorID", String::class.java)
         Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
+    @Test
+    fun `create an author, update and delete`() {
+        headers.contentType = MediaType.APPLICATION_JSON_UTF8
+        val author = AuthorDTO(firstName = "Juan", lastName = "Jamon")
+        val entity = HttpEntity(author, headers)
+
+        // Post
+        val response = restTemplate.postForEntity(BASE_URI, entity, AuthorDTO::class.java)
+        Assertions.assertThat(response).isNotNull
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
+
+        val responseAuthorDTO = response.body!!
+        val authorID = responseAuthorDTO.id
+
+        Assertions.assertThat(authorID).isNotNull()
+        Assertions.assertThat(responseAuthorDTO.firstName).isEqualTo("Juan")
+        Assertions.assertThat(responseAuthorDTO.lastName).isEqualTo("Jamon")
+
+        // Update/edit
+        val params = HashMap<String, String>()
+        params["authorId"] = authorID.toString()
+
+        val updatedAuthor = responseAuthorDTO.copy()
+        updatedAuthor.firstName = "Alex"
+        updatedAuthor.lastName = "Bach"
+
+        val requestEntity = HttpEntity(updatedAuthor, headers)
+        val updateResponse = restTemplate.exchange("$BASE_URI/id/{authorId}",
+            HttpMethod.PUT,
+            requestEntity,
+            AuthorDTO::class.java,
+            params)
+
+
+        Assertions.assertThat(updateResponse).isNotNull
+        Assertions.assertThat(updateResponse.statusCode).isEqualTo(HttpStatus.OK)
+
+        val foundAuthorDTO = updateResponse.body!!
+        Assertions.assertThat(foundAuthorDTO.id).isEqualTo(authorID)
+        Assertions.assertThat(foundAuthorDTO.firstName).isEqualTo("Alex")
+        Assertions.assertThat(foundAuthorDTO.lastName).isEqualTo("Bach")
+
+        // Delete
+        restTemplate.delete("$BASE_URI/id/$authorID")
+
+        // Find Again
+        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/id/$authorID", String::class.java)
+        Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+    }
 
 }

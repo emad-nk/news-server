@@ -41,6 +41,27 @@ class DefaultArticleService(private val articleRepository: ArticleRepository,
     }
 
     /**
+     * Updates an article
+     *
+     * @param articleId id of the article that needs to be updated
+     * @param articleDO articleDO update object
+     * @param authorIds list of author ids
+     * @throws EntityNotFoundException when cannot find all the IDs
+     * @return the updated articleDO
+     */
+    @Transactional
+    override fun updateArticle(articleId: Long, articleDO: ArticleDO, authorIds: List<Long>): ArticleDO {
+        val article = findArticleChecked(articleId)
+        article.authors = findAuthorsChecked(authorIds)
+        article.header = articleDO.header
+        article.text = articleDO.text
+        article.shortDescription = articleDO.shortDescription
+        article.keywords = articleDO.keywords
+        article.publishDate = articleDO.publishDate
+        return article
+    }
+
+    /**
      * Gets an article by its ID
      *
      * @param articleId ID of article

@@ -18,7 +18,7 @@ object Search {
     }
 
     fun getArticlesByPeriod(from: LocalDate, to: LocalDate): Specification<ArticleDO> {
-        return Specification { root, criteriaQuery, criteriaBuilder ->
+        return Specification { root, _, criteriaBuilder ->
             criteriaBuilder.between(root.get<LocalDate>(PUBLISH_DATE), from, to)
         }
     }
@@ -32,7 +32,7 @@ object Search {
     }
 
     private fun getArticlesByAuthorJoin(fieldName: String, fieldValue: String): Specification<ArticleDO> {
-        return Specification { root, criteriaQuery, criteriaBuilder ->
+        return Specification { root, _, criteriaBuilder ->
             val authorJoin: Join<ArticleDO, AuthorDO> = root.join(AUTHORS_FIELD)
             criteriaBuilder.equal(authorJoin.get<String>(fieldName), fieldValue)
         }

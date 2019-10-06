@@ -18,16 +18,20 @@ import javax.validation.Valid
 @RequestMapping("v1/articles")
 class ArticleController(private val articleService: ArticleService) {
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(ArticleController::class.java)!!
-    }
-
     @ApiOperation(value = "Add a new article")
     @PostMapping(consumes = ["application/json"])
     @ResponseStatus(HttpStatus.CREATED)
     fun createArticle(@RequestBody @Valid articleDTO: ArticleDTO): ArticleDTO {
         val articleDO = MapperUtil.makeArticleDO(articleDTO)
         return MapperUtil.makeArticleDTO(articleService.create(articleDO, articleDTO.authorIds!!))
+    }
+
+    @ApiOperation(value = "Add a new article")
+    @PutMapping("/update/id/{articleId}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateArticle(@PathVariable articleId: Long, @RequestBody @Valid articleDTO: ArticleDTO): ArticleDTO {
+        val articleDO = MapperUtil.makeArticleDO(articleDTO)
+        return MapperUtil.makeArticleDTO(articleService.updateArticle(articleId, articleDO, articleDTO.authorIds!!))
     }
 
     @ApiOperation(value = "Get article with id")
@@ -45,7 +49,7 @@ class ArticleController(private val articleService: ArticleService) {
     }
 
     @ApiOperation(value = "Get all the articles within specified period (yyyy-MM-dd)")
-    @GetMapping("/dates")
+    @GetMapping("/dates", produces = ["application/json"])
     @ResponseStatus(HttpStatus.OK)
     fun getArticlesWithinPeriod(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) from: LocalDate,
                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) to: LocalDate)
