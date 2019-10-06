@@ -6,10 +6,10 @@ import org.hibernate.HibernateException
 import org.modelmapper.MappingException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.time.LocalDateTime
 
 /**
@@ -17,7 +17,7 @@ import java.time.LocalDateTime
  * in order to not show critical information
  */
 @ControllerAdvice
-class ExceptionControllerAdvice : ResponseEntityExceptionHandler() {
+class ExceptionControllerAdvice {
 
     @ResponseBody
     @ExceptionHandler(EntityNotFoundException::class)
@@ -55,6 +55,16 @@ class ExceptionControllerAdvice : ResponseEntityExceptionHandler() {
         val errorDetails = ApiError(LocalDateTime.now(),
             "Could not map provided JSON.",
             "${ex.message!!}.  ${ex.cause}")
+
+        return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
+    }
+
+    @ResponseBody
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun fieldValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ApiError> {
+        val errorDetails = ApiError(LocalDateTime.now(),
+            "Field validation error.",
+            ex.message!!)
 
         return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
     }
