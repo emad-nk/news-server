@@ -103,7 +103,7 @@ class ArticleControllerTest : TestBase() {
         updatedArticle.authorIds = listOf(1)
 
         val requestEntity = HttpEntity(updatedArticle, headers)
-        val updateResponse = restTemplate.exchange("$BASE_URI/update/id/{articleId}",
+        val updateResponse = restTemplate.exchange("$BASE_URI/id/{articleId}",
             HttpMethod.PUT,
             requestEntity,
             ArticleDTO::class.java,

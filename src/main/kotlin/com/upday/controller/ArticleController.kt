@@ -26,7 +26,7 @@ class ArticleController(private val articleService: ArticleService) {
     }
 
     @ApiOperation(value = "Add a new article")
-    @PutMapping("/update/id/{articleId}")
+    @PutMapping("/id/{articleId}")
     @ResponseStatus(HttpStatus.OK)
     fun updateArticle(@PathVariable articleId: Long, @RequestBody @Valid articleDTO: ArticleDTO): ArticleDTO {
         val articleDO = MapperUtil.makeArticleDO(articleDTO)
