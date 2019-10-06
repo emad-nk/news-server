@@ -48,7 +48,6 @@ class DefaultArticleServiceTest : TestBase() {
     @Test
     fun `create should throw exception if it cannot find all the authors`() {
         val articleDO = getArticleMocked()
-        `when`(articleRepository.save(articleDO)).thenReturn(articleDO)
         `when`(authorRepository.findAllById(listOf(1, 2))).thenReturn(listOf(getAuthorMocked()))
         Assertions.assertThatExceptionOfType(EntityNotFoundException::class.java)
             .isThrownBy { service.create(articleDO, listOf(1, 2)) }
