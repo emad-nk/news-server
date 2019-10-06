@@ -22,10 +22,7 @@ Then run below command to start the application:
 ```
 mvn spring-boot:run
 ```
-Another approach for running the application, would be running it through the provider `jar` file under the `jar` folder:
-```
-java -jar news_publisher-1.0.0-SNAPSHOT.jar
-```
+Another approach for running the application, would be running it through Intellij by simply running the `NewsApplication`
 
 ## Application flaws
 

@@ -15,8 +15,10 @@ import org.springframework.test.context.junit4.SpringRunner
 import java.time.LocalDate
 import java.util.HashMap
 import org.springframework.http.HttpEntity
+import org.springframework.test.annotation.DirtiesContext
 
 @RunWith(SpringRunner::class)
+@DirtiesContext
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ArticleControllerTest : TestBase() {
 

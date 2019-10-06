@@ -16,10 +16,6 @@ import javax.validation.Valid
 @RequestMapping("v1/authors")
 class AuthorController(private val authorService: AuthorService) {
 
-    companion object {
-        private val LOGGER = LoggerFactory.getLogger(AuthorController::class.java)!!
-    }
-
     @ApiOperation(value = "Add a new author")
     @PostMapping(consumes = ["application/json"])
     @ResponseStatus(HttpStatus.CREATED)

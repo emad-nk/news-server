@@ -20,30 +20,30 @@ data class ArticleDTO(
     @ApiModelProperty(example = "[1, 2]", dataType = "List", required = true)
     var authorIds: List<Long>? = null,
 
-    @NotNull
-    @NotEmpty
+    @get:NotNull
+    @get:NotEmpty
     @ApiModelProperty(example = "This is a header", required = true)
-    @Size(min = 5, max = 50)
+    @get:Size(min = 5, max = 50)
     var header: String? = null,
 
-    @NotNull
-    @NotEmpty
+    @get:NotNull
+    @get:NotEmpty
     @ApiModelProperty(example = "This is a short description", required = true)
-    @Size(min = 10, max = 50)
+    @get:Size(min = 10, max = 50)
     var shortDescription: String? = null,
 
-    @NotNull
-    @NotEmpty
+    @get:NotNull
+    @get:NotEmpty
     @ApiModelProperty(example = "This is a long text", required = true)
-    @Size(min = 10)
+    @get:Size(min = 10)
     var text: String? = null,
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @ApiModelProperty(example = "2019-10-05", required = true)
-    @NotNull
+    @get:NotNull
     var publishDate: LocalDate? = null,
 
-    @NotNull
+    @get:NotNull
     @ApiModelProperty(example = "[plants, green, cultivate]", dataType = "List", required = true)
     var keywords: MutableList<String> = ArrayList(),
 

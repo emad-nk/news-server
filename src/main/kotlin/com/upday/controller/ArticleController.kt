@@ -4,7 +4,6 @@ import com.upday.datatransferobject.ArticleDTO
 import com.upday.service.article.ArticleService
 import com.upday.util.MapperUtil
 import io.swagger.annotations.ApiOperation
-import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*

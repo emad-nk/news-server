@@ -2,23 +2,22 @@ package com.upday.domainobject
 
 import javax.persistence.*
 import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
 
 @Entity
 @Table(name = "author",
     uniqueConstraints = [UniqueConstraint(name = "unique_firstName_lastName", columnNames = ["firstName", "lastName"])])
-data class AuthorDO(
+class AuthorDO(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @NotNull
-    @Size(max = 50)
+    @Column(nullable = false)
+    @NotNull(message = "lastName cannot be null!")
     var lastName: String?,
 
-    @NotNull
-    @Size(max = 50)
+    @Column(nullable = false)
+    @NotNull(message = "firstName cannot be null!")
     var firstName: String?,
 
     @ManyToMany(mappedBy = "authors")

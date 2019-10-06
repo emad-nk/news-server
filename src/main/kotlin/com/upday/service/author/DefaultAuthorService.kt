@@ -1,7 +1,6 @@
 package com.upday.service.author
 
 import com.upday.dataaccessobject.AuthorRepository
-import com.upday.domainobject.ArticleDO
 import com.upday.domainobject.AuthorDO
 import com.upday.exception.ConstraintsViolationException
 import com.upday.exception.EntityNotFoundException

@@ -11,16 +11,16 @@ data class AuthorDTO(
     @ApiModelProperty(hidden = true)
     var id: Long? = null,
 
-    @NotNull
-    @NotEmpty
+    @get:NotNull
+    @get:NotEmpty
     @ApiModelProperty(example = "Smith", required = true)
-    @Size(min = 2, max = 50)
+    @get:Size(min = 2, max = 50)
     var lastName: String? = null,
 
-    @NotNull
-    @NotEmpty
+    @get:NotNull
+    @get:NotEmpty
     @ApiModelProperty(example = "Oliver", required = true)
-    @Size(min = 2, max = 50)
+    @get:Size(min = 2, max = 50)
     var firstName: String? = null,
 
     @ApiModelProperty(hidden = true)

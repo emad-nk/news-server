@@ -4,34 +4,35 @@ import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
 import javax.persistence.*
 import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
 
 @Entity
 @Table(name = "article")
-data class ArticleDO(
+class ArticleDO(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @NotNull
-    @Size(max = 50)
+    @Column(nullable = false)
+    @NotNull(message = "header cannot be null!")
     var header: String,
 
-    @NotNull
-    @Size(max = 100)
+    @Column(nullable = false)
+    @NotNull(message = "shortDescription cannot be null!")
     var shortDescription: String,
 
-    @NotNull
+    @Column(nullable = false)
+    @NotNull(message = "text cannot be null!")
     var text: String,
 
     @ElementCollection
     @CollectionTable(
-        name="keywords_table",
-        joinColumns=[JoinColumn(name="article_id")])
-    var keywords: MutableList<String> = ArrayList(),
+        name = "keywords_table",
+        joinColumns = [JoinColumn(name = "article_id")])
+    var keywords: MutableList<String>,
 
-    @NotNull
+    @Column(nullable = false)
+    @NotNull(message = "publishDate cannot be null!")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     var publishDate: LocalDate,
 
@@ -39,5 +40,5 @@ data class ArticleDO(
     @JoinTable(name = "author_article",
         joinColumns = [JoinColumn(name = "author_id")],
         inverseJoinColumns = [JoinColumn(name = "article_id")])
-    var authors: MutableList<AuthorDO> = ArrayList()
+    var authors: MutableList<AuthorDO>
 )
