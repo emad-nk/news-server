@@ -57,4 +57,16 @@ class ArticleRepositoryTest {
             LocalDate.now().minusDays(1)))
         Assertions.assertThat(articles).hasSize(0)
     }
+
+    @Test
+    fun `get articles with keyword`() {
+        val articles = articleRepository.findAll(Search.getArticlesByKeyword("planet"))
+        Assertions.assertThat(articles).hasSize(2)
+    }
+
+    @Test
+    fun `get articles with keyword that cannot be found`() {
+        val articles = articleRepository.findAll(Search.getArticlesByKeyword("notExist"))
+        Assertions.assertThat(articles).hasSize(0)
+    }
 }

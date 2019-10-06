@@ -49,12 +49,19 @@ class ArticleController(private val articleService: ArticleService) {
     }
 
     @ApiOperation(value = "Get all the articles within specified period (yyyy-MM-dd)")
-    @GetMapping("/dates", produces = ["application/json"])
+    @GetMapping("/dates")
     @ResponseStatus(HttpStatus.OK)
     fun getArticlesWithinPeriod(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) from: LocalDate,
                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) to: LocalDate)
         : List<ArticleDTO> {
         return MapperUtil.makeArticleDTOList(articleService.getArticlesWithinPeriod(from, to))
+    }
+
+    @ApiOperation(value = "Get all the articles with specified keyword")
+    @GetMapping("/keywords/{keyword}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getArticlesWithKeyword(@PathVariable keyword: String): List<ArticleDTO> {
+        return MapperUtil.makeArticleDTOList(articleService.getArticlesWithKeyword(keyword))
     }
 
     @ApiOperation(value = "Delete article with id")

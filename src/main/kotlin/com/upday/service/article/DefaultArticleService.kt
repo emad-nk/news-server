@@ -95,6 +95,16 @@ class DefaultArticleService(private val articleRepository: ArticleRepository,
     }
 
     /**
+     * Gets list of articles with specified keyword
+     *
+     * @param keyword to search for in articles
+     * @return list of articleDO which is found
+     */
+    override fun getArticlesWithKeyword(keyword: String): List<ArticleDO> {
+        return articleRepository.findAll(Search.getArticlesByKeyword(keyword))
+    }
+
+    /**
      * Deletes an article
      *
      * @param articleId ID of article

@@ -10,5 +10,6 @@ interface ArticleService {
     fun getArticleById(articleId: Long): ArticleDO
     fun getArticlesFromAuthor(firstName: String, lastName: String): List<ArticleDO>
     fun getArticlesWithinPeriod(from: LocalDate, to: LocalDate): List<ArticleDO>
+    fun getArticlesWithKeyword(keyword: String): List<ArticleDO>
     fun deleteArticle(articleId: Long)
 }

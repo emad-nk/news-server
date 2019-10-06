@@ -24,7 +24,7 @@ class SampleData(var authorRepository: AuthorRepository, val articleRepository: 
             header = "some header",
             shortDescription = "some short description",
             text = "some text",
-            keywords = arrayListOf("keyword1", "keyword2"),
+            keywords = arrayListOf("planet", "keyword2"),
             publishDate = LocalDate.now(),
             authors = mutableListOf(author1))
 
@@ -32,7 +32,7 @@ class SampleData(var authorRepository: AuthorRepository, val articleRepository: 
             header = "some header2",
             shortDescription = "some short description2",
             text = "some text2",
-            keywords = arrayListOf("keyword50", "keyword51"),
+            keywords = arrayListOf("planet", "keyword51"),
             publishDate = LocalDate.now(),
             authors = mutableListOf(author1, author2))
 

@@ -12,6 +12,7 @@ object Search {
     private const val FIRST_NAME = "firstName"
     private const val LAST_NAME = "lastName"
     private const val PUBLISH_DATE = "publishDate"
+    private const val KEYWORDS = "keywords"
 
     fun getArticlesByAuthorFirstNameLastName(firstName: String, lastName: String): Specification<ArticleDO> {
         return getArticlesByAuthorFirstName(firstName).and(getArticleByAuthorLastName(lastName))
@@ -20,6 +21,12 @@ object Search {
     fun getArticlesByPeriod(from: LocalDate, to: LocalDate): Specification<ArticleDO> {
         return Specification { root, _, criteriaBuilder ->
             criteriaBuilder.between(root.get<LocalDate>(PUBLISH_DATE), from, to)
+        }
+    }
+
+    fun getArticlesByKeyword(keyword: String): Specification<ArticleDO> {
+        return Specification { root, _, criteriaBuilder ->
+            criteriaBuilder.isMember(keyword, root.get(KEYWORDS))
         }
     }
 

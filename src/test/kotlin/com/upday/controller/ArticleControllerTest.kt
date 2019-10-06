@@ -190,4 +190,22 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(response.body!!.size).isEqualTo(0)
     }
 
+    @Test
+    fun `find article with keyword`() {
+        val uriWithDates = "$BASE_URI/keywords/planet"
+
+        val response = restTemplate
+            .exchange(uriWithDates,
+                HttpMethod.GET,
+                null,
+                object : ParameterizedTypeReference<List<ArticleDTO>>() {})
+
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+
+        val articlesDTO = response.body!!
+        Assertions.assertThat(articlesDTO.size).isEqualTo(2)
+        Assertions.assertThat(articlesDTO[0].header).isEqualTo("some header")
+        Assertions.assertThat(articlesDTO[1].header).isEqualTo("some header2")
+    }
+
 }

@@ -45,7 +45,7 @@ data class ArticleDTO(
 
     @NotNull
     @ApiModelProperty(example = "[plants, green, cultivate]", dataType = "List", required = true)
-    var keywords: ArrayList<String> = ArrayList(),
+    var keywords: MutableList<String> = ArrayList(),
 
     @ApiModelProperty(hidden = true)
     @JsonIgnoreProperties("articles")

@@ -25,8 +25,11 @@ data class ArticleDO(
     @NotNull
     var text: String,
 
-    @NotNull
-    var keywords: ArrayList<String> = ArrayList(),
+    @ElementCollection
+    @CollectionTable(
+        name="keywords_table",
+        joinColumns=[JoinColumn(name="article_id")])
+    var keywords: MutableList<String> = ArrayList(),
 
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
