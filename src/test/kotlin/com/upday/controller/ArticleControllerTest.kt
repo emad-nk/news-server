@@ -2,7 +2,6 @@ package com.upday.controller
 
 import com.upday.TestBase
 import com.upday.datatransferobject.ArticleDTO
-import com.upday.datatransferobject.AuthorDTO
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -117,7 +116,6 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(updateResponse).isNotNull
         Assertions.assertThat(updateResponse.statusCode).isEqualTo(HttpStatus.OK)
 
-//        val updatedResponseDTO = mapper.readValue(updateResponse.body!!, ArticleDTO::class.java)
         val updatedResponseDTO = updateResponse.body!!
         Assertions.assertThat(updatedResponseDTO.id).isEqualTo(articleID)
         Assertions.assertThat(updatedResponseDTO.authors).hasSize(1)
