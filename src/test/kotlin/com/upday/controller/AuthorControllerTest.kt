@@ -111,4 +111,16 @@ class AuthorControllerTest : TestBase() {
         Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
+    @Test
+    fun `create author should fail for field validations`() {
+        headers.contentType = MediaType.APPLICATION_JSON_UTF8
+        val author = AuthorDTO(firstName = "J", lastName = "J")
+        val entity = HttpEntity(author, headers)
+
+        // Post
+        val response = restTemplate.postForEntity(BASE_URI, entity, AuthorDTO::class.java)
+        Assertions.assertThat(response).isNotNull
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+    }
+
 }

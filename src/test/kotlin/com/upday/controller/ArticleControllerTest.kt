@@ -21,7 +21,6 @@ import org.springframework.test.annotation.DirtiesContext
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ArticleControllerTest : TestBase() {
 
-
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
 
@@ -32,10 +31,9 @@ class ArticleControllerTest : TestBase() {
 
     @Test
     fun `create an article then find it and delete it`() {
-        headers.contentType = MediaType.APPLICATION_JSON
+        headers.contentType = MediaType.APPLICATION_JSON_UTF8
         val article = getArticleDTO()
         val entity = HttpEntity(article, headers)
-
 
         // Post
         val response = restTemplate.postForEntity(BASE_URI, entity, ArticleDTO::class.java)
@@ -43,7 +41,6 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
 
         val articleResponseDTO = response.body!!
-
         val articleID = articleResponseDTO.id
 
         Assertions.assertThat(articleID).isNotNull()
@@ -51,7 +48,6 @@ class ArticleControllerTest : TestBase() {
 
         // Find
         val findResponse = restTemplate.getForEntity("$BASE_URI/id/$articleID", ArticleDTO::class.java)
-
         Assertions.assertThat(findResponse).isNotNull
         Assertions.assertThat(findResponse.statusCode).isEqualTo(HttpStatus.OK)
 
@@ -74,7 +70,7 @@ class ArticleControllerTest : TestBase() {
 
     @Test
     fun `create an article, edit it and delete it`() {
-        headers.contentType = MediaType.APPLICATION_JSON
+        headers.contentType = MediaType.APPLICATION_JSON_UTF8
         val article = getArticleDTO()
         val entity = HttpEntity(article, headers)
 
@@ -206,6 +202,20 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(articlesDTO.size).isEqualTo(2)
         Assertions.assertThat(articlesDTO[0].header).isEqualTo("some header")
         Assertions.assertThat(articlesDTO[1].header).isEqualTo("some header2")
+    }
+
+    @Test
+    fun `create article should fail for field validations`() {
+        headers.contentType = MediaType.APPLICATION_JSON_UTF8
+        val article = getArticleDTO()
+        article.header = "h"
+        article.shortDescription = "h"
+        val entity = HttpEntity(article, headers)
+
+        // Post
+        val response = restTemplate.postForEntity(BASE_URI, entity, ArticleDTO::class.java)
+        Assertions.assertThat(response).isNotNull
+        Assertions.assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
     }
 
 }
