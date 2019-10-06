@@ -1,4 +1,4 @@
-package com.upday.service.article
+package com.upday.service
 
 import com.upday.domainobject.ArticleDO
 import java.time.LocalDate

@@ -4,9 +4,7 @@ import com.upday.TestBase
 import com.upday.dataaccessobject.ArticleRepository
 import com.upday.dataaccessobject.AuthorRepository
 import com.upday.exception.EntityNotFoundException
-import com.upday.service.article.DefaultArticleService
 import org.assertj.core.api.Assertions
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -14,7 +12,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
@@ -29,14 +26,6 @@ class DefaultArticleServiceTest : TestBase() {
 
     @InjectMocks
     private lateinit var service: DefaultArticleService
-
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setup() {
-            MockitoAnnotations.initMocks(DefaultArticleService::class.java)
-        }
-    }
 
     @Test
     fun `find should throw exception when cannot find article with id`() {

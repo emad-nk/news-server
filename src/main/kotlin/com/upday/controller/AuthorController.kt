@@ -1,8 +1,10 @@
 package com.upday.controller
 
 import com.upday.datatransferobject.AuthorDTO
-import com.upday.service.author.AuthorService
-import com.upday.util.MapperUtil
+import com.upday.datatransferobject.toDO
+import com.upday.domainobject.toDTO
+import com.upday.domainobject.toDTOList
+import com.upday.service.AuthorService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -19,34 +21,33 @@ class AuthorController(private val authorService: AuthorService) {
     @PostMapping(consumes = ["application/json"])
     @ResponseStatus(HttpStatus.CREATED)
     fun createAuthor(@RequestBody @Valid authorDTO: AuthorDTO): AuthorDTO {
-        val authorDO = MapperUtil.makeAuthorDO(authorDTO)
-        return MapperUtil.makeAuthorDTO(authorService.create(authorDO))
+        val authorDO = authorDTO.toDO()
+        return authorService.create(authorDO).toDTO()
     }
 
     @ApiOperation(value = "Get author with id")
-    @GetMapping("/id/{authorId}")
+    @GetMapping("/{authorId}")
     @ResponseStatus(HttpStatus.OK)
     fun getAuthor(@PathVariable authorId: Long): AuthorDTO {
-        return MapperUtil.makeAuthorDTO(authorService.getAuthorById(authorId))
+        return authorService.getAuthorById(authorId).toDTO()
     }
 
     @ApiOperation(value = "Get all the authors")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getAuthors(): List<AuthorDTO> {
-        return MapperUtil.makeAuthorDTOList(authorService.getAllAuthors())
+        return authorService.getAllAuthors().toDTOList()
     }
 
     @ApiOperation(value = "Update an author")
-    @PutMapping("/id/{authorId}")
+    @PutMapping("/{authorId}")
     @ResponseStatus(HttpStatus.OK)
     fun updateAuthor(@PathVariable authorId: Long, @RequestBody @Valid authorDTO: AuthorDTO): AuthorDTO {
-        val authorDO = MapperUtil.makeAuthorDO(authorDTO)
-        return MapperUtil.makeAuthorDTO(authorService.updateAuthor(authorId, authorDO))
+        return authorService.updateAuthor(authorId, authorDTO.toDO()).toDTO()
     }
 
     @ApiOperation(value = "Delete an author")
-    @DeleteMapping("/id/{authorId}")
+    @DeleteMapping("/{authorId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteAuthor(@PathVariable authorId: Long) {
         authorService.deleteAuthor(authorId)

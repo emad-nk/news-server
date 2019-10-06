@@ -3,15 +3,12 @@ package com.upday.service
 import com.upday.TestBase
 import com.upday.dataaccessobject.AuthorRepository
 import com.upday.exception.EntityNotFoundException
-import com.upday.service.author.DefaultAuthorService
 import org.assertj.core.api.Assertions
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.*
 
@@ -23,15 +20,6 @@ class DefaultAuthorServiceTest : TestBase() {
 
     @InjectMocks
     private lateinit var service: DefaultAuthorService
-
-    companion object {
-        @BeforeClass
-        @JvmStatic
-        fun setup() {
-            MockitoAnnotations.initMocks(DefaultAuthorService::class.java)
-        }
-    }
-
 
     @Test
     fun `find should throw exception when cannot find author with id`() {

@@ -25,7 +25,6 @@ class ExceptionControllerAdvice {
         val errorDetails = ApiError(LocalDateTime.now(),
             "Entity not found.",
             ex.message)
-
         return ResponseEntity(errorDetails, HttpStatus.NOT_FOUND)
     }
 
@@ -35,7 +34,6 @@ class ExceptionControllerAdvice {
         val errorDetails = ApiError(LocalDateTime.now(),
             "Some constraints are violated.",
             ex.message)
-
         return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
     }
 
@@ -44,8 +42,7 @@ class ExceptionControllerAdvice {
     fun hibernateException(ex: HibernateException): ResponseEntity<ApiError> {
         val errorDetails = ApiError(LocalDateTime.now(),
             "Hibernate exception.",
-            "${ex.message!!}.  ${ex.cause}")
-
+            "No details")
         return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
     }
 
@@ -55,7 +52,6 @@ class ExceptionControllerAdvice {
         val errorDetails = ApiError(LocalDateTime.now(),
             "Could not map provided JSON.",
             "${ex.message!!}.  ${ex.cause}")
-
         return ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST)
     }
 

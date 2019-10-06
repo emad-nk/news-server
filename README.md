@@ -32,3 +32,4 @@ Another approach for running the application, would be running it through Intell
 * Currently the application runs on `dev` mode, therefore multiple profiles should be added and the application in production should be running with `environment variable` defining that it's running in production `prod`.
 * Since there is not much data to play with, endpoints that `list` articles/authors do not have `paging` so in case of listing millions of rows, it will kill the application.
 * For simplicity every commit has been pushed directly to the master instead of feature branch.
+* Jacoco minimum coverage has been set to `0.3`, which ideally should be more than `0.7` or `0.8`.

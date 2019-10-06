@@ -1,5 +1,7 @@
 package com.upday.domainobject
 
+import com.upday.datatransferobject.AuthorDTO
+import org.modelmapper.ModelMapper
 import javax.persistence.*
 import javax.validation.constraints.NotNull
 
@@ -23,3 +25,7 @@ class AuthorDO(
     @ManyToMany(mappedBy = "authors")
     var articles: MutableList<ArticleDO> = ArrayList()
 )
+
+private val mapper = ModelMapper()
+fun AuthorDO.toDTO(): AuthorDTO = mapper.map(this, AuthorDTO::class.java)
+fun List<AuthorDO>.toDTOList(): List<AuthorDTO> = this.map { authorDO -> authorDO.toDTO() }

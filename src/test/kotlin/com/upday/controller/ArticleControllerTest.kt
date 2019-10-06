@@ -47,7 +47,7 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(articleResponseDTO.header).isEqualTo("some header for test")
 
         // Find
-        val findResponse = restTemplate.getForEntity("$BASE_URI/id/$articleID", ArticleDTO::class.java)
+        val findResponse = restTemplate.getForEntity("$BASE_URI/$articleID", ArticleDTO::class.java)
         Assertions.assertThat(findResponse).isNotNull
         Assertions.assertThat(findResponse.statusCode).isEqualTo(HttpStatus.OK)
 
@@ -61,10 +61,10 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(foundArticleDTO.authors[1].lastName).isEqualTo("Writer")
 
         // Delete
-        restTemplate.delete("$BASE_URI/id/$articleID")
+        restTemplate.delete("$BASE_URI/$articleID")
 
         // Find Again
-        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/id/$articleID", String::class.java)
+        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/$articleID", String::class.java)
         Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
@@ -103,7 +103,7 @@ class ArticleControllerTest : TestBase() {
         updatedArticle.authorIds = listOf(1)
 
         val requestEntity = HttpEntity(updatedArticle, headers)
-        val updateResponse = restTemplate.exchange("$BASE_URI/id/{articleId}",
+        val updateResponse = restTemplate.exchange("$BASE_URI/{articleId}",
             HttpMethod.PUT,
             requestEntity,
             ArticleDTO::class.java,
@@ -125,10 +125,10 @@ class ArticleControllerTest : TestBase() {
         Assertions.assertThat(articleResponseDTO.keywords[1]).isEqualTo("keyword2Test")
 
         // Delete
-        restTemplate.delete("$BASE_URI/id/$articleID")
+        restTemplate.delete("$BASE_URI/$articleID")
 
         // Find Again
-        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/id/$articleID", String::class.java)
+        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/$articleID", String::class.java)
         Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
@@ -188,7 +188,7 @@ class ArticleControllerTest : TestBase() {
 
     @Test
     fun `find article with keyword`() {
-        val uriWithDates = "$BASE_URI/keywords/planet"
+        val uriWithDates = "$BASE_URI/keywords?keyword=planet"
 
         val response = restTemplate
             .exchange(uriWithDates,

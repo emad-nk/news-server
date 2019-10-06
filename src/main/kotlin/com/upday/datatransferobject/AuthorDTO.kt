@@ -2,7 +2,9 @@ package com.upday.datatransferobject
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.upday.domainobject.AuthorDO
 import io.swagger.annotations.ApiModelProperty
+import org.modelmapper.ModelMapper
 import javax.validation.constraints.*
 
 data class AuthorDTO(
@@ -27,3 +29,6 @@ data class AuthorDTO(
     @JsonIgnoreProperties("authors")
     var articles: MutableList<ArticleDTO> = ArrayList()
 )
+
+private val mapper = ModelMapper()
+fun AuthorDTO.toDO(): AuthorDO = mapper.map(this, AuthorDO::class.java)

@@ -44,7 +44,7 @@ class AuthorControllerTest : TestBase() {
         Assertions.assertThat(responseAuthorDTO.firstName).isEqualTo("Juan")
 
         // Find
-        val findResponse = restTemplate.getForEntity("$BASE_URI/id/$authorID", AuthorDTO::class.java)
+        val findResponse = restTemplate.getForEntity("$BASE_URI/$authorID", AuthorDTO::class.java)
 
         Assertions.assertThat(findResponse).isNotNull
         Assertions.assertThat(findResponse.statusCode).isEqualTo(HttpStatus.OK)
@@ -54,10 +54,10 @@ class AuthorControllerTest : TestBase() {
         Assertions.assertThat(foundAuthorDTO.lastName).isEqualTo("Jamon")
 
         // Delete
-        restTemplate.delete("$BASE_URI/id/$authorID")
+        restTemplate.delete("$BASE_URI/$authorID")
 
         // Find Again
-        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/id/$authorID", String::class.java)
+        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/$authorID", String::class.java)
         Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 
@@ -88,7 +88,7 @@ class AuthorControllerTest : TestBase() {
         updatedAuthor.lastName = "Bach"
 
         val requestEntity = HttpEntity(updatedAuthor, headers)
-        val updateResponse = restTemplate.exchange("$BASE_URI/id/{authorId}",
+        val updateResponse = restTemplate.exchange("$BASE_URI/{authorId}",
             HttpMethod.PUT,
             requestEntity,
             AuthorDTO::class.java,
@@ -104,10 +104,10 @@ class AuthorControllerTest : TestBase() {
         Assertions.assertThat(foundAuthorDTO.lastName).isEqualTo("Bach")
 
         // Delete
-        restTemplate.delete("$BASE_URI/id/$authorID")
+        restTemplate.delete("$BASE_URI/$authorID")
 
         // Find Again
-        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/id/$authorID", String::class.java)
+        val findAgainResponse = restTemplate.getForEntity("$BASE_URI/$authorID", String::class.java)
         Assertions.assertThat(findAgainResponse.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
     }
 

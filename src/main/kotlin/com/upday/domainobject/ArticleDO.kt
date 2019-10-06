@@ -1,5 +1,7 @@
 package com.upday.domainobject
 
+import com.upday.datatransferobject.ArticleDTO
+import org.modelmapper.ModelMapper
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
 import javax.persistence.*
@@ -42,3 +44,7 @@ class ArticleDO(
         inverseJoinColumns = [JoinColumn(name = "article_id")])
     var authors: MutableList<AuthorDO>
 )
+
+private val mapper = ModelMapper()
+fun ArticleDO.toDTO(): ArticleDTO = mapper.map(this, ArticleDTO::class.java)
+fun List<ArticleDO>.toDTOList(): List<ArticleDTO> = this.map { articleDO -> articleDO.toDTO() }

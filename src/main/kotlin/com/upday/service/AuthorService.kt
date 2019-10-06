@@ -1,4 +1,4 @@
-package com.upday.service.author
+package com.upday.service
 
 import com.upday.domainobject.AuthorDO
 

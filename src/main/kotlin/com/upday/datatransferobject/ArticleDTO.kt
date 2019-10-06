@@ -3,7 +3,9 @@ package com.upday.datatransferobject
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.upday.domainobject.ArticleDO
 import io.swagger.annotations.ApiModelProperty
+import org.modelmapper.ModelMapper
 import org.springframework.format.annotation.DateTimeFormat
 import java.time.LocalDate
 import javax.validation.constraints.NotEmpty
@@ -51,3 +53,6 @@ data class ArticleDTO(
     @JsonIgnoreProperties("articles")
     var authors: MutableList<AuthorDTO> = ArrayList()
 )
+
+private val mapper = ModelMapper()
+fun ArticleDTO.toDO(): ArticleDO = mapper.map(this, ArticleDO::class.java)
