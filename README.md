@@ -22,7 +22,19 @@ Then run below command to start the application:
 ```
 mvn spring-boot:run
 ```
+
+or after installing you can go to `target` folder and run the `jar` file:
+```
+java -jar news_publisher-1.0.0-SNAPSHOT.jar
+```
+
+
 Another approach for running the application, would be running it through Intellij by simply running the `NewsApplication`
+
+After successfully running the project you can go to localhost to check the API specification and documentation:
+```
+http://localhost:8080/
+```
 
 ## Application flaws
 
